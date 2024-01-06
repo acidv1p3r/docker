@@ -1,0 +1,37 @@
+# AMP Dockerfile
+
+FROM arm64v8/debian:12-slim
+
+ENV AMP_CONTAINER=DOCKER
+ENV LD_LIBRARY_PATH=./:/opt/cubecoders/amp/:/AMP/
+
+RUN apt-get update &&\
+ DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends\
+ locales\
+ software-properties-common\
+ libc++-dev\
+ inetutils-ping\
+ tmux\
+ socat\
+ unzip\
+ wget\
+ libsqlite3-0\
+ git\
+ curl\
+ gdb\
+ libgdiplus &&\
+ apt-get clean &&\
+ rm -rf /var/lib/apt/lists/* &&\
+ localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 &&\
+ wget -q https://repo.cubecoders.com/aarch64/ampinstmgr-latest.tgz &&\
+ tar -xf ampinstmgr-latest.tgz -C / &&\
+ rm ampinstmgr-latest.tgz
+
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
+
+COPY ampstart.sh /
+
+ENTRYPOINT ["/ampstart.sh"]
+CMD []
