@@ -2,6 +2,7 @@
 
 echo "[Info] AMPStart for Docker - v23.07.1"
 INSTALLED_DEPS_FILE="/AMP/InstalledDeps.json"
+ARCH=$(uname -m)
 
 if [ -z "${AMPUSERID}" ]; then
   echo "[Info] This docker image cannot be used directly by itself - it must be started by ampinstmgr"
@@ -20,7 +21,7 @@ else
     touch /home/amp/.gitconfig
     chown -R amp:amp /home/amp 2> /dev/null
     usermod -aG tty amp
-    chmod +x /AMP/AMP_Linux_aarch64
+    chmod +x /AMP/AMP_Linux_$ARCH
     echo "[Info] Container setup complete."
 fi
 
@@ -61,6 +62,6 @@ export AMP_CONTAINER
 export AMPMEMORYLIMIT
 
 ARGS=$@
-exec su -l -w AMPHOSTPLATFORM,AMP_CONTAINER,AMPMEMORYLIMIT -c "ampinstmgr --sync-certs; cd /AMP; HOME=/home/amp /AMP/AMP_Linux_aarch64 ${ARGS}; exit $?" -- amp
+exec su -l -w AMPHOSTPLATFORM,AMP_CONTAINER,AMPMEMORYLIMIT -c "ampinstmgr --sync-certs; cd /AMP; HOME=/home/amp /AMP/AMP_Linux_$ARCH ${ARGS}; exit $?" -- amp
 exit $?
 
