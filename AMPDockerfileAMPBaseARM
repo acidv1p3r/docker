@@ -1,4 +1,4 @@
-# AMP Dockerfile
+# AMP Dockerfile for ARM
 
 FROM arm64v8/debian:12-slim
 
