@@ -1,6 +1,6 @@
 # AMP Dockerfile for Java on ARM
 
-FROM greelan/amp:java-arm
+FROM greelan/amp:arm
 
 RUN mkdir -p /usr/share/man/man1 &&\
  apt-get update &&\
