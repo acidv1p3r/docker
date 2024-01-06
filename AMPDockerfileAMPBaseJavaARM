@@ -13,7 +13,7 @@ RUN apt-get update &&\
  apt-get clean &&\
  rm -rf /var/lib/apt/lists/*
 
-ADD ampstart.sh /
+COPY ampstart.sh /
 
 ENTRYPOINT ["/ampstart.sh"]
 CMD []
