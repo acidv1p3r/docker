@@ -44,7 +44,7 @@ done
 if [ ${#DEPS_TO_INSTALL[@]} -ne 0 ]; then
   echo "[Info] Installing dependencies..."
   apt-get update
-  apt-get install -y ${DEPS_TO_INSTALL[@]}
+  apt-get install -y --allow-downgrades ${DEPS_TO_INSTALL[@]}
 
 #  for DEP in ${DEPS_TO_INSTALL[@]}; do
 #    jq --arg dep "$DEP" '. += [$dep]' $INSTALLED_DEPS_FILE > temp && mv temp $INSTALLED_DEPS_FILE
