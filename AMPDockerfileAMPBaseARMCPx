@@ -28,7 +28,7 @@ RUN apt-get update &&\
  xz-utils\
  bzip2\
  libzstd1\
- liblua5.3-0 &&\
+ liblua5.3-0\
  xdg-user-dirs &&\
  apt-get clean &&\
  rm -rf /var/lib/apt/lists/* &&\
