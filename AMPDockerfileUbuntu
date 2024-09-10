@@ -1,6 +1,6 @@
 # AMP Dockerfile
 
-FROM amd64/ubuntu:22.04
+FROM amd64/ubuntu:24.04
 
 ENV AMP_CONTAINER=DOCKER
 ENV LD_LIBRARY_PATH=./:/opt/cubecoders/amp/:/AMP/
