@@ -57,11 +57,24 @@ else
   echo "[Info] No missing dependencies to install."
 fi
 
+if [ -n "$AMP_MOUNTPOINTS" ]; then
+  echo "[Info] Updating mountpoint permissions..." 
+  IFS=':' read -r -a dirs <<< "$AMP_MOUNTPOINTS"
+   
+  for dir in "${dirs[@]}"; do
+    echo "[Info] - Updating $dir..."
+    chown -R amp:amp "$dir"
+  done
+fi
+
 export AMPHOSTPLATFORM
 export AMP_CONTAINER
 export AMPMEMORYLIMIT
+export AMPSWAPLIMIT
+export AMPCONTAINERCPUS
+export AMP_CONTAINER_HOST_NETWORK
+export AMP_SHARED_INSTALL
 
 ARGS=$@
-exec su -l -w AMPHOSTPLATFORM,AMP_CONTAINER,AMPMEMORYLIMIT -c "ampinstmgr --sync-certs; cd /AMP; HOME=/home/amp /AMP/AMP_Linux_$ARCH ${ARGS}; exit $?" -- amp
+exec su -l -w AMPHOSTPLATFORM,AMP_CONTAINER,AMPMEMORYLIMIT,AMP_CONTAINER_HOST_NETWORK,AMPSWAPLIMIT,AMPCONTAINERCPUS,AMP_SHARED_INSTALL -c "ampinstmgr --sync-certs; cd /AMP; HOME=/home/amp /AMP/AMP_Linux_$ARCH ${ARGS}; exit $?" -- amp
 exit $?
-
