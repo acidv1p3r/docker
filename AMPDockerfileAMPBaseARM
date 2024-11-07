@@ -10,6 +10,7 @@ RUN apt-get update &&\
  gnupg\
  locales\
  software-properties-common\
+ lib32gcc-s1\
  libc++-dev\
  coreutils\
  inetutils-ping\
@@ -28,7 +29,19 @@ RUN apt-get update &&\
  xz-utils\
  bzip2\
  libzstd1\
- liblua5.3-0 &&\
+ libgdiplus\
+ lib32stdc++6\
+ libc6\
+ libatomic1\
+ libpulse-dev\
+ liblua5.3-0\
+ lib32z1\
+ libncurses5:i386\
+ libbz2-1.0:i386\
+ libtinfo5:i386\
+ libcurl3-gnutls:i386\
+ libsdl2-2.0-0:i386\
+ xdg-user-dirs &&\
  apt-get clean &&\
  rm -rf /var/lib/apt/lists/* &&\
  localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 &&\
