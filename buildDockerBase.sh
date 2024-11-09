@@ -8,5 +8,6 @@ docker build --rm --pull --no-cache --progress=plain --platform=linux/arm64 -f A
 docker build --rm --pull --no-cache --progress=plain --platform=linux/arm64 -f AMPDockerfileAMPBaseARMJava -t greelan/amp:arm-java .
 docker build --rm --pull --no-cache --progress=plain --platform=linux/arm64 -f AMPDockerfileAMPBaseARMPython3 -t greelan/amp:arm-python3 .
 docker build --rm --pull --no-cache --progress=plain --platform=linux/arm64 -f AMPDockerfileAMPBaseARMCPx -t greelan/amp:arm-cpx .
+#docker build --rm --pull --no-cache --progress=plain --platform=linux/arm64 -f AMPDockerfileAMPBaseARMCPxWine9 -t greelan/amp:arm-cpx-wine9 .
 
 docker push -a greelan/amp
