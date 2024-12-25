@@ -32,6 +32,7 @@ RUN dpkg --add-architecture armhf &&\
  libzstd1\
  libgdiplus\
  libc6\
+ libc6-dev\
  libatomic1\
  libpulse-dev\
  liblua5.3-0\
