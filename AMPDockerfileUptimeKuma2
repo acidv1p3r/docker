@@ -1,0 +1,42 @@
+# AMP Dockerfile for Uptime Kuma v2
+# Based on https://github.com/louislam/uptime-kuma/blob/223cde831f09a49a317bc4e5926cc8a38a6fa3f2/docker/debian-base.dockerfile
+
+FROM cubecoders/ampbase
+
+RUN apt-get clean &&\
+ apt update &&\
+ DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends\
+ sqlite3\
+ ca-certificates\
+ iputils-ping\
+ util-linux &&\
+ apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN wget -qO apprise.deb https://ftp.debian.org/debian/pool/main/a/apprise/apprise_1.9.1-1_all.deb &&\
+ apt update &&\
+ DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends\
+ ./apprise.deb\
+ python3-paho-mqtt &&\
+ apt-get clean && rm -rf /var/lib/apt/lists/* &&\
+ rm -f apprise.deb
+
+RUN mkdir -p --mode=0755 /usr/share/keyrings &&\
+ wget -qO- https://pkg.cloudflare.com/cloudflare-main.gpg | tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null &&\
+ echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared bookworm main' | tee /etc/apt/sources.list.d/cloudflared.list &&\
+ apt update &&\
+ DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends -t stable cloudflared &&\
+ cloudflared version &&\
+ apt-get clean && rm -rf /var/lib/apt/lists/*
+
+ENV UPTIME_KUMA_ENABLE_EMBEDDED_MARIADB=1
+RUN apt update &&\
+ DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends\
+ chromium\
+ fonts-indic\
+ fonts-noto\
+ fonts-noto-cjk\
+ mariadb-server &&\
+ apt-get clean && rm -rf /var/lib/apt/lists/*
+
+ ENTRYPOINT ["sh", "-c", "/ampstart.sh && chown -R amp:amp /var/lib/mysql"]
+ CMD [] 
