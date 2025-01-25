@@ -33,8 +33,16 @@ jobs:
         id: detect-changes
         run: |
           echo "Checking for changed files..."
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
-
+          # Fallback to the default branch if 'before' is not available
+          if [ -z "${{ github.event.before }}" ] || [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+            echo "No previous commit detected. Comparing against default branch."
+            git fetch origin ${{ github.event.repository.default_branch }} --depth=1
+            CHANGED_FILES=$(git diff --name-only origin/${{ github.event.repository.default_branch }})
+          else
+            echo "Comparing against previous commit: ${{ github.event.before }}"
+            CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          fi
+          
           # Initialize IMAGES_TO_BUILD
           IMAGES_TO_BUILD=""
 
