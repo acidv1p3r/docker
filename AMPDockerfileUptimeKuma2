@@ -9,7 +9,8 @@ RUN apt-get clean &&\
  sqlite3\
  ca-certificates\
  iputils-ping\
- util-linux &&\
+ util-linux\
+ dumb-init &&\
  apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN wget -qO- http://ftp.debian.org/debian/pool/main/a/apprise/ | grep -oP 'href="apprise_.*?all\.deb"' | sed 's/href="//;s/"//' | sort -V | tail -n 1 | xargs -I {} wget -qO apprise.deb http://ftp.debian.org/debian/pool/main/a/apprise/{} &&\
@@ -38,5 +39,7 @@ RUN apt update &&\
  mariadb-server &&\
  apt-get clean && rm -rf /var/lib/apt/lists/*
 
-ENTRYPOINT ["sh", "-c", "/ampstart.sh && chown -R amp:amp /var/lib/mysql"]
-CMD [] 
+COPY ampstart.sh /
+
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["sh", "-c", "/ampstart.sh && chown -R amp:amp /var/lib/mysql"] 
