@@ -1,5 +1,5 @@
 # AMP Dockerfile for Uptime Kuma v2
-# Based on https://github.com/louislam/uptime-kuma/blob/223cde831f09a49a317bc4e5926cc8a38a6fa3f2/docker/debian-base.dockerfile 
+# Based on https://github.com/louislam/uptime-kuma/blob/223cde831f09a49a317bc4e5926cc8a38a6fa3f2/docker/debian-base.dockerfile
 
 FROM cubecoders/ampbase
 
