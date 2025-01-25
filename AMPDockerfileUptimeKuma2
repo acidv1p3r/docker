@@ -39,5 +39,5 @@ RUN apt update &&\
 
 COPY ampstart.sh /
 
-ENTRYPOINT ["sh", "-c", "/ampstart.sh && chown -R amp:amp /var/lib/mysql"]
+ENTRYPOINT ["bash", "-c", "/ampstart.sh && chown -R amp:amp /var/lib/mysql"]
 CMD [] 
