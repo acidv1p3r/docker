@@ -33,6 +33,10 @@ jobs:
         id: detect-changes
         run: |
           echo "Checking for changed files..."
+          
+          # Fetch full history to ensure we have all commits
+          git fetch --unshallow || git fetch --all
+
           # Fallback to the default branch if 'before' is not available
           if [ -z "${{ github.event.before }}" ] || [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
             echo "No previous commit detected. Comparing against default branch."
