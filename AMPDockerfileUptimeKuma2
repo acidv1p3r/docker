@@ -25,7 +25,6 @@ RUN mkdir -p --mode=0755 /usr/share/keyrings &&\
  echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared bookworm main' | tee /etc/apt/sources.list.d/cloudflared.list &&\
  apt update &&\
  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends -t stable cloudflared &&\
- cloudflared version &&\
  apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ENV UPTIME_KUMA_ENABLE_EMBEDDED_MARIADB=1
