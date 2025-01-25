@@ -29,5 +29,95 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Run buildDockerBase.sh script
-        run: ./buildDockerBase.sh
+      - name: Detect changed files and map dependencies
+        id: detect-changes
+        run: |
+          echo "Checking for changed files..."
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+
+          # Initialize IMAGES_TO_BUILD
+          IMAGES_TO_BUILD=""
+
+          # Add all images if ampstart.sh is changed
+          if echo "$CHANGED_FILES" | grep -q "ampstart.sh"; then
+            IMAGES_TO_BUILD="arm arm-java arm-python3 arm-cpx arm-cpx-wine9 ubuntu uptimekuma2"
+          fi
+
+          # Add dependencies for AMPDockerFileARM
+          if echo "$CHANGED_FILES" | grep -q "AMPDockerfileARM"; then
+            IMAGES_TO_BUILD="$IMAGES_TO_BUILD arm arm-java arm-python3 arm-cpx arm-cpx-wine9"
+          fi
+
+          # Add image for AMPDockerFileARMJava
+          if echo "$CHANGED_FILES" | grep -q "AMPDockerfileARMJava"; then
+            IMAGES_TO_BUILD="$IMAGES_TO_BUILD arm-java"
+          fi
+
+          # Add image for AMPDockerFileARMPython3
+          if echo "$CHANGED_FILES" | grep -q "AMPDockerfileARMPython3"; then
+            IMAGES_TO_BUILD="$IMAGES_TO_BUILD arm-python3"
+          fi
+
+          # Add image for AMPDockerfileARMCPx
+          if echo "$CHANGED_FILES" | grep -q "AMPDockerfileARMCPx"; then
+            IMAGES_TO_BUILD="$IMAGES_TO_BUILD arm-cpx arm-cpx-wine9"
+          fi
+
+          # Add image for AMPDockerfileARMCPxWine9
+          if echo "$CHANGED_FILES" | grep -q "AMPDockerfileARMCPxWine9"; then
+            IMAGES_TO_BUILD="$IMAGES_TO_BUILD arm-cpx-wine9"
+          fi
+
+          # Add image for AMPDockerfileUbuntu
+          if echo "$CHANGED_FILES" | grep -q "AMPDockerfileUbuntu"; then
+            IMAGES_TO_BUILD="$IMAGES_TO_BUILD ubuntu"
+          fi
+
+          # Add image for AMPDockerfileUptimeKuma2
+          if echo "$CHANGED_FILES" | grep -q "AMPDockerfileUptimeKuma2"; then
+            IMAGES_TO_BUILD="$IMAGES_TO_BUILD uptimekuma2"
+          fi
+
+          # Remove duplicate image entries
+          IMAGES_TO_BUILD=$(echo $IMAGES_TO_BUILD | tr ' ' '\n' | sort -u | tr '\n' ' ')
+
+          echo "IMAGES_TO_BUILD=$IMAGES_TO_BUILD" >> $GITHUB_ENV
+
+      - name: Build and push images
+        if: env.IMAGES_TO_BUILD != ''
+        run: |
+          for IMAGE in $IMAGES_TO_BUILD; do
+            case $IMAGE in
+              arm)
+                echo "Building and pushing ARM image..."
+                docker buildx build --push --progress=plain --platform=linux/arm64 -f AMPDockerfileARM -t greelan/amp:arm .
+                ;;
+              arm-java)
+                echo "Building and pushing ARM Java image..."
+                docker buildx build --push --progress=plain --platform=linux/arm64 -f AMPDockerfileARMJava -t greelan/amp:arm-java .
+                ;;
+              arm-python3)
+                echo "Building and pushing ARM Python3 image..."
+                docker buildx build --push --progress=plain --platform=linux/arm64 -f AMPDockerfileARMPython3 -t greelan/amp:arm-python3 .
+                ;;
+              arm-cpx)
+                echo "Building and pushing ARM CPx image..."
+                docker buildx build --push --progress=plain --platform=linux/arm64 -f AMPDockerfileARMCPx -t greelan/amp:arm-cpx .
+                ;;
+              arm-cpx-wine9)
+                echo "Building and pushing ARM CPx Wine9 image..."
+                docker buildx build --push --progress=plain --platform=linux/arm64 -f AMPDockerfileARMCPxWine9 -t greelan/amp:arm-cpx-wine9 .
+                ;;
+              ubuntu)
+                echo "Building and pushing Ubuntu image..."
+                docker buildx build --push --progress=plain --platform=linux/amd64 -f AMPDockerfileUbuntu -t greelan/amp:ubuntu .
+                ;;
+              uptimekuma2)
+                echo "Building and pushing Uptime Kuma 2 image..."
+                docker buildx build --push --progress=plain --platform=linux/amd64 -f AMPDockerfileUptimeKuma2 -t greelan/amp:uptimekuma2 .
+                ;;
+              *)
+                exit 1
+                ;;
+            esac
+          done
