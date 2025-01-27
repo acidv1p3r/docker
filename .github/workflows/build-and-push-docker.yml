@@ -6,7 +6,7 @@ on:
   push:
     paths:
       - 'AMPDockerfile*'
-      - 'ampstart.sh'
+      - '*ampstart.sh'
   workflow_dispatch:
 
 jobs:
@@ -50,9 +50,9 @@ jobs:
           # Initialize IMAGES_TO_BUILD
           IMAGES_TO_BUILD=""
 
-          # Add all images if ampstart.sh is changed
+          # Add all images except uptimekuma2 if ampstart.sh is changed
           if echo "$CHANGED_FILES" | grep -q "ampstart.sh"; then
-            IMAGES_TO_BUILD="arm arm-java arm-python3 arm-cpx arm-cpx-wine9 ubuntu uptimekuma2"
+            IMAGES_TO_BUILD="arm arm-java arm-python3 arm-cpx arm-cpx-wine9 ubuntu"
           fi
 
           # Add dependencies for AMPDockerFileARM
@@ -86,7 +86,7 @@ jobs:
           fi
 
           # Add image for AMPDockerfileUptimeKuma2
-          if echo "$CHANGED_FILES" | grep -q "AMPDockerfileUptimeKuma2"; then
+          if echo "$CHANGED_FILES" | grep -q -e "AMPDockerfileUptimeKuma2" -e "uk2_ampstart.sh"; then
             IMAGES_TO_BUILD="$IMAGES_TO_BUILD uptimekuma2"
           fi
 

@@ -37,7 +37,7 @@ RUN apt update &&\
  mariadb-server &&\
  apt-get clean && rm -rf /var/lib/apt/lists/*
 
-COPY ampstart.sh /
+COPY uk2_ampstart.sh /ampstart.sh
 
 ENTRYPOINT ["/ampstart.sh"]
 CMD [] 
