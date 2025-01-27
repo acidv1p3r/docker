@@ -25,7 +25,7 @@ else
     echo "[Info] Container setup complete."
 fi
 
-# Addition for Uptime Kuma 2
+# Addition for Uptime Kuma 2 (for embedded MySQL)
 chown -R amp:amp /var/lib/mysql
 
 if [ -f "$INSTALLED_DEPS_FILE" ]; then
