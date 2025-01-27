@@ -51,7 +51,7 @@ jobs:
           IMAGES_TO_BUILD=""
 
           # Add all images except uptimekuma2 if ampstart.sh is changed
-          if echo "$CHANGED_FILES" | grep -q "ampstart.sh"; then
+          if echo "$CHANGED_FILES" | grep -q -w "ampstart.sh"; then
             IMAGES_TO_BUILD="arm arm-java arm-python3 arm-cpx arm-cpx-wine9 ubuntu"
           fi
 
