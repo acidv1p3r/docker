@@ -102,31 +102,31 @@ jobs:
             case $IMAGE in
               arm)
                 echo "Building and pushing ARM image..."
-                docker buildx build --push --progress=plain --platform=linux/arm64 -f AMPDockerfileARM -t greelan/amp:arm .
+                docker buildx build --push --progress=plain --platform=linux/arm64 -f AMPDockerfileARM -t acidv1p3r/amp:arm .
                 ;;
               arm-java)
                 echo "Building and pushing ARM Java image..."
-                docker buildx build --push --progress=plain --platform=linux/arm64 -f AMPDockerfileARMJava -t greelan/amp:arm-java .
+                docker buildx build --push --progress=plain --platform=linux/arm64 -f AMPDockerfileARMJava -t acidv1p3r/amp:arm-java .
                 ;;
               arm-python3)
                 echo "Building and pushing ARM Python3 image..."
-                docker buildx build --push --progress=plain --platform=linux/arm64 -f AMPDockerfileARMPython3 -t greelan/amp:arm-python3 .
+                docker buildx build --push --progress=plain --platform=linux/arm64 -f AMPDockerfileARMPython3 -t acidv1p3r/amp:arm-python3 .
                 ;;
               arm-cpx)
                 echo "Building and pushing ARM CPx image..."
-                docker buildx build --push --progress=plain --platform=linux/arm64 -f AMPDockerfileARMCPx -t greelan/amp:arm-cpx .
+                docker buildx build --push --progress=plain --platform=linux/arm64 -f AMPDockerfileARMCPx -t acidv1p3r/amp:arm-cpx .
                 ;;
               arm-cpx-wine9)
                 echo "Building and pushing ARM CPx Wine9 image..."
-                docker buildx build --push --progress=plain --platform=linux/arm64 -f AMPDockerfileARMCPxWine9 -t greelan/amp:arm-cpx-wine9 .
+                docker buildx build --push --progress=plain --platform=linux/arm64 -f AMPDockerfileARMCPxWine9 -t acidv1p3r/amp:arm-cpx-wine9 .
                 ;;
               ubuntu)
                 echo "Building and pushing Ubuntu image..."
-                docker buildx build --push --progress=plain --platform=linux/amd64 -f AMPDockerfileUbuntu -t greelan/amp:ubuntu .
+                docker buildx build --push --progress=plain --platform=linux/amd64 -f AMPDockerfileUbuntu -t acidv1p3r/amp:ubuntu .
                 ;;
               uptimekuma2)
                 echo "Building and pushing Uptime Kuma 2 image..."
-                docker buildx build --push --progress=plain --platform=linux/amd64 -f AMPDockerfileUptimeKuma2 -t greelan/amp:uptimekuma2 .
+                docker buildx build --push --progress=plain --platform=linux/amd64 -f AMPDockerfileUptimeKuma2 -t acidv1p3r/amp:uptimekuma2 .
                 ;;
               *)
                 exit 1
