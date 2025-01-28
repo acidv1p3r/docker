@@ -1,52 +1,63 @@
 # AMP Dockerfile for ARM
+# Builds a lightweight AMP container for ARM64 architecture.
 
+# Use Debian 12 slim as the base image for a minimal footprint
 FROM arm64v8/debian:12-slim
 
-ENV AMP_CONTAINER=DOCKER
-ENV LD_LIBRARY_PATH=./:/opt/cubecoders/amp/:/AMP/
+# Set environment variables specific to the AMP container
+ENV AMP_CONTAINER=DOCKER \
+    LD_LIBRARY_PATH=./:/opt/cubecoders/amp/:/AMP/ \
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
 
-RUN apt-get update &&\
- DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends\
- gnupg\
- locales\
- software-properties-common\
- libc++-dev\
- coreutils\
- inetutils-ping\
- iproute2\
- tmux\
- socat\
- unzip\
- wget\
- procps\
- libsqlite3-0\
- jq\
- git\
- git-lfs\
- curl\
- gdb\
- xz-utils\
- bzip2\
- libzstd1\
- libgdiplus\
- libc6\
- libc6-dev\
- libatomic1\
- libpulse-dev\
- liblua5.3-0\
- xdg-user-dirs &&\
- apt-get clean &&\
- rm -rf /var/lib/apt/lists/* &&\
- localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 &&\
- wget -q https://repo.cubecoders.com/aarch64/ampinstmgr-latest.tgz &&\
- tar -xf ampinstmgr-latest.tgz -C / &&\
- rm ampinstmgr-latest.tgz
+# Update package lists and install required dependencies
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        gnupg \
+        locales \
+        software-properties-common \
+        libc++-dev \
+        coreutils \
+        inetutils-ping \
+        iproute2 \
+        tmux \
+        socat \
+        unzip \
+        wget \
+        procps \
+        libsqlite3-0 \
+        jq \
+        git \
+        git-lfs \
+        curl \
+        gdb \
+        xz-utils \
+        bzip2 \
+        libzstd1 \
+        libgdiplus \
+        libc6 \
+        libc6-dev \
+        libatomic1 \
+        libpulse-dev \
+        liblua5.3-0 \
+        xdg-user-dirs && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-ENV LANG=en_US.UTF-8
-ENV LANGUAGE=en_US:en
-ENV LC_ALL=en_US.UTF-8
+# Set locale to UTF-8
+RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
+# Download and install AMP Instance Manager
+RUN wget -q https://repo.cubecoders.com/aarch64/ampinstmgr-latest.tgz && \
+    tar -xf ampinstmgr-latest.tgz -C / && \
+    rm ampinstmgr-latest.tgz
+
+# Copy the startup script into the container
 COPY ampstart.sh /
 
+# Set the entrypoint script
 ENTRYPOINT ["/ampstart.sh"]
+
+# Default command is empty, allowing the entrypoint script to take control
 CMD []
