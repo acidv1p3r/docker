@@ -1,43 +1,65 @@
 # AMP Dockerfile for Uptime Kuma v2
-# Based on https://github.com/louislam/uptime-kuma/blob/223cde831f09a49a317bc4e5926cc8a38a6fa3f2/docker/debian-base.dockerfile
+# Based on Uptime Kuma's Debian-based Dockerfile
+# Provides a customized AMP container with Uptime Kuma and necessary dependencies
 
+# Use the CubeCoders AMP base image
 FROM cubecoders/ampbase
 
-RUN apt-get clean &&\
- apt update &&\
- DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends\
- sqlite3\
- ca-certificates\
- iputils-ping\
- util-linux &&\
- apt-get clean && rm -rf /var/lib/apt/lists/*
+# Clean up and install essential dependencies
+RUN apt-get clean && \
+    apt update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        sqlite3 \
+        ca-certificates \
+        iputils-ping \
+        util-linux && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN wget -qO- http://ftp.debian.org/debian/pool/main/a/apprise/ | grep -oP 'href="apprise_.*?all\.deb"' | sed 's/href="//;s/"//' | sort -V | tail -n 1 | xargs -I {} wget -qO apprise.deb http://ftp.debian.org/debian/pool/main/a/apprise/{} &&\
- apt update &&\
- DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends\
- ./apprise.deb\
- python3-paho-mqtt &&\
- apt-get clean && rm -rf /var/lib/apt/lists/* &&\
- rm -f apprise.deb
+# Install the latest Apprise package and its dependencies
+RUN wget -qO- http://ftp.debian.org/debian/pool/main/a/apprise/ | \
+        grep -oP 'href="apprise_.*?all\.deb"' | \
+        sed 's/href="//;s/"//' | \
+        sort -V | \
+        tail -n 1 | \
+        xargs -I {} wget -qO apprise.deb http://ftp.debian.org/debian/pool/main/a/apprise/{} && \
+    apt update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        ./apprise.deb \
+        python3-paho-mqtt && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -f apprise.deb
 
-RUN mkdir -p --mode=0755 /usr/share/keyrings &&\
- wget -qO- https://pkg.cloudflare.com/cloudflare-main.gpg | tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null &&\
- echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared bookworm main' | tee /etc/apt/sources.list.d/cloudflared.list &&\
- apt update &&\
- DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends -t stable cloudflared &&\
- apt-get clean && rm -rf /var/lib/apt/lists/*
+# Add Cloudflare repository and install Cloudflared
+RUN mkdir -p --mode=0755 /usr/share/keyrings && \
+    wget -qO- https://pkg.cloudflare.com/cloudflare-main.gpg | tee /usr/share/keyrings/cloudflare-main.gpg > /dev/null && \
+    echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared bookworm main' | \
+        tee /etc/apt/sources.list.d/cloudflared.list && \
+    apt update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends -t stable cloudflared && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
+# Enable embedded MariaDB for Uptime Kuma
 ENV UPTIME_KUMA_ENABLE_EMBEDDED_MARIADB=1
-RUN apt update &&\
- DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends\
- chromium\
- fonts-indic\
- fonts-noto\
- fonts-noto-cjk\
- mariadb-server &&\
- apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Install Chromium, fonts, and MariaDB server
+RUN apt update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        chromium \
+        fonts-indic \
+        fonts-noto \
+        fonts-noto-cjk \
+        mariadb-server && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy the AMP start script into the container
 COPY uk2_ampstart.sh /ampstart.sh
 
+# Set the entrypoint script
 ENTRYPOINT ["/ampstart.sh"]
-CMD [] 
+
+# Default command is empty, allowing the entrypoint script to handle execution
+CMD []
